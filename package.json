@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "canvas": "^2.11.2",
+    "gif-frames": "^1.0.1",
+    "nodejs-screen-capture": "^0.3.0",
+    "nodemon": "^2.0.22",
+    "screenshot-desktop": "^0.0.0-development"
+  },
+  "scripts": {
+    "dev": "nodemon"
+  }
+}

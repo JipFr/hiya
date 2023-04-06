@@ -1,0 +1,23 @@
+scoreboard objectives add gif-smile-2 dummy
+execute as @s[scores={gif-smile-2=0}] run function jip:gif-smile-2/0
+execute as @s[scores={gif-smile-2=2}] run function jip:gif-smile-2/1
+execute as @s[scores={gif-smile-2=4}] run function jip:gif-smile-2/2
+execute as @s[scores={gif-smile-2=6}] run function jip:gif-smile-2/3
+execute as @s[scores={gif-smile-2=8}] run function jip:gif-smile-2/4
+execute as @s[scores={gif-smile-2=10}] run function jip:gif-smile-2/5
+execute as @s[scores={gif-smile-2=12}] run function jip:gif-smile-2/6
+execute as @s[scores={gif-smile-2=14}] run function jip:gif-smile-2/7
+execute as @s[scores={gif-smile-2=16}] run function jip:gif-smile-2/8
+execute as @s[scores={gif-smile-2=18}] run function jip:gif-smile-2/9
+execute as @s[scores={gif-smile-2=20}] run function jip:gif-smile-2/10
+execute as @s[scores={gif-smile-2=22}] run function jip:gif-smile-2/11
+execute as @s[scores={gif-smile-2=24}] run function jip:gif-smile-2/12
+execute as @s[scores={gif-smile-2=26}] run function jip:gif-smile-2/13
+execute as @s[scores={gif-smile-2=28}] run function jip:gif-smile-2/14
+execute as @s[scores={gif-smile-2=30}] run function jip:gif-smile-2/15
+execute as @s[scores={gif-smile-2=32}] run function jip:gif-smile-2/16
+execute as @s[scores={gif-smile-2=34}] run function jip:gif-smile-2/17
+execute as @s[scores={gif-smile-2=36}] run function jip:gif-smile-2/18
+execute as @s[scores={gif-smile-2=38}] run function jip:gif-smile-2/19
+scoreboard players set @e[scores={gif-smile-2=40..}] gif-smile-2 0
+scoreboard players add @s gif-smile-2 1

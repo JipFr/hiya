@@ -1,0 +1,35 @@
+const { createCanvas, loadImage } = require("canvas");
+const imageToParticles = require("./util/imageToParticles");
+
+module.exports = async (src = "./images/jip-transparent.png") => {
+	const img = await loadImage(src);
+
+	const canvas = createCanvas(img.naturalWidth, img.naturalHeight);
+	const ctx = canvas.getContext("2d");
+
+	ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+	// To particles
+
+	// Small
+
+	// const div = 50;
+	// const dimensions = 2;
+	// const particleSize = 0.2;
+
+	// Big
+
+	const div = 10;
+	const dimensions = 10;
+	const particleSize = 1;
+
+	const commands = imageToParticles({
+		dimensions,
+		div,
+		particleSize,
+		canvas,
+		yOffset: -5,
+	});
+
+	return { commands, functionName: "picture" };
+};
