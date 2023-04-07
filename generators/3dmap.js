@@ -8,7 +8,7 @@ module.exports = () => {
 	const width = 300;
 	const length = 300;
 
-	const prefix = "^";
+	const prefix = "~";
 
 	for (let x = 0; x < width; x += steppingSize) {
 		for (let y = 0; y < length; y += steppingSize) {
