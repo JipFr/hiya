@@ -1,34 +1,34 @@
 const { Noise } = require("noisejs");
-const noise = new Noise(Math.random());
 
 module.exports = () => {
+	const noise = new Noise(Math.random());
 	const commands = [];
 
-	const steppingSize = 1;
-	const width = 300;
-	const length = 300;
+	const circular = false;
+	const steppingSize = 0.2;
+	const width = 8.9;
+	const length = 4.9;
+	const m = 0.5;
+	const particleSize = 1;
+	const noiseDivider = 5;
+	const offset = 2;
 
-	const prefix = "~";
+	const prefix = "^";
 
 	for (let x = 0; x < width; x += steppingSize) {
 		for (let y = 0; y < length; y += steppingSize) {
-			let value = noise.simplex2(x / 50, y / 50);
+			let value = noise.simplex2(x / noiseDivider, y / noiseDivider);
 
-			const m = 15;
+			let relYPos = Math.floor(value * m * 100) / 100; // From -5 to +5 when `m` is 5
 
-			let relYPos = Math.floor((value * 100 * m) / 100); // From -5 to +5 when `m` is 5
-
-			const particleSize = 2;
-
-			let data = [128, 255, 128];
-			let block = "grass_block";
+			// let data = [128, 255, 128];
+			const gV = (y / width) * 128 + 128;
+			let data = [0, ((value + 1) / 2) * 200 + 55, 0];
 			let waterTreshold = -0.6 * m;
 			if (relYPos < waterTreshold) {
 				data = [128, 128, 255];
-				block = "water";
 			} else if (relYPos > 0.5 * m) {
 				data = [128, 128, 128];
-				block = "cobblestone";
 			}
 
 			const r = data[0] / 255;
@@ -36,37 +36,39 @@ module.exports = () => {
 			const b = data[2] / 255;
 			const rgb = `${r} ${g} ${b}`;
 
+			let xP = Math.floor(x * 100) / 100;
+			let yP = Math.floor(y * 100) / 100;
+
+			const rX = xP - width / 2;
+			const rY = yP - length / 2;
+
+			// const dist = Math.sqrt(rX * rX + rY * rY);
+			if (!isInEllipse(rX, rY, width, length) && circular) continue;
+
 			if (data[3] === 0) continue;
 
 			if (relYPos < waterTreshold) {
-				for (let w = relYPos; w < waterTreshold; w++) {
-					const pos = `${prefix}${x - width / 2} ${prefix}${w} ${prefix}${
-						y - length / 2
-					}`;
-					commands.push(`setblock ${pos} water`);
+				for (let w = relYPos; w < waterTreshold; w += steppingSize) {
+					const pos = `${prefix}${rX} ${prefix}${w + offset} ${prefix}${rY}`;
+					commands.push(
+						`particle minecraft:dust ${rgb} ${particleSize} ${pos} 0 0 0 20 1`
+					);
 				}
 			} else {
-				const pos = `${prefix}${x - width / 2} ${prefix}${relYPos} ${prefix}${
-					y - length / 2
-				}`;
-				commands.push(`setblock ${pos} ${block}`);
+				const pos = `${prefix}${rX} ${prefix}${
+					relYPos + offset
+				} ${prefix}${rY}`;
+				commands.push(
+					`particle minecraft:dust ${rgb} ${particleSize} ${pos} 0 0 0 20 1 force`
+				);
 			}
-
-			commands.push(
-				`fill ${prefix}${x - width / 2} ${prefix}${relYPos - 1} ${prefix}${
-					y - length / 2
-				} ${prefix}${x - width / 2} ${prefix}${relYPos - 3} ${prefix}${
-					y - length / 2
-				} dirt`
-			);
-
-			// commands.push(
-			// 	`setblock ${prefix}${Math.floor(x - width / 2)} ${prefix}${Math.floor(
-			// 		value
-			// 	)} ${prefix}${Math.floor(y - length / 2)} grass_block`
-			// );
 		}
 	}
 
 	return { commands, functionName: "map" };
 };
+
+function isInEllipse(x, y, width, length) {
+	const ellipseDist = (x * x) / width + (y * y) / length;
+	return ellipseDist <= 1;
+}

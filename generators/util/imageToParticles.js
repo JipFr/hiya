@@ -27,7 +27,7 @@ module.exports = ({ dimensions, div, canvas, particleSize, yOffset = 0 }) => {
 			if (data[3] === 0) continue;
 
 			commands.push(
-				`particle minecraft:dust ${rgb} ${particleSize} ${pos} 0 0 0 20 1 force`
+				`particle minecraft:dust ${rgb} ${particleSize} ${pos} 0 0 0 20 1 normal`
 			);
 		}
 	}

@@ -1,13 +1,14 @@
 const fs = require("fs");
 
 const generators = [
-	// require("./generators/colorcube"),
+	require("./generators/colorcube"),
 	// require("./generators/colorcircle"),
 	// require("./generators/picture"),
 	// require("./generators/screenshare"),
 	// require("./generators/text"),
 	// require("./generators/gif"),
-	// require("./generators/3dmap"),
+	require("./generators/3dmap"),
+	// require("./generators/worldgen"),
 	// require("./generators/stupid-circle"),
 	// require("./generators/waterplatform"),
 ];
@@ -18,7 +19,7 @@ const generators = [
 
 		if (!functionName) continue;
 
-		console.log(commands);
+		// console.log(commands);
 
 		fs.writeFileSync(
 			`./data/jip/functions/${functionName}.mcfunction`,

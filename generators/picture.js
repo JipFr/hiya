@@ -28,7 +28,6 @@ module.exports = async (src = "./images/jip-transparent.png") => {
 		div,
 		particleSize,
 		canvas,
-		yOffset: -5,
 	});
 
 	return { commands, functionName: "picture" };

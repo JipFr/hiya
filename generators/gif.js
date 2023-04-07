@@ -5,9 +5,9 @@ const gifFrames = require("gif-frames");
 const { execSync } = require("child_process");
 
 module.exports = async () => {
-	const filename = "godzilla-2";
+	// const filename = "godzilla-2";
 	// const filename = "palpatine";
-	// const filename = "minion";
+	const filename = "minion";
 	// const filename = "smile-2";
 	// const filename = "1984";
 
