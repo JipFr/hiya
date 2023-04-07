@@ -8,6 +8,8 @@ module.exports = () => {
 	const width = 300;
 	const length = 300;
 
+	const prefix = "^";
+
 	for (let x = 0; x < width; x += steppingSize) {
 		for (let y = 0; y < length; y += steppingSize) {
 			let value = noise.simplex2(x / 50, y / 50);
@@ -19,11 +21,14 @@ module.exports = () => {
 			const particleSize = 2;
 
 			let data = [128, 255, 128];
+			let block = "grass_block";
 			let waterTreshold = -0.6 * m;
 			if (relYPos < waterTreshold) {
 				data = [128, 128, 255];
+				block = "water";
 			} else if (relYPos > 0.5 * m) {
 				data = [128, 128, 128];
+				block = "cobblestone";
 			}
 
 			const r = data[0] / 255;
@@ -34,27 +39,31 @@ module.exports = () => {
 			if (data[3] === 0) continue;
 
 			if (relYPos < waterTreshold) {
-				const pos = `^${x - width / 2} ^${relYPos - 1} ^${y - length / 2}`;
-				commands.push(
-					`particle minecraft:dust .5 .5 .5 ${particleSize} ${pos} 0 0 0 20 1 normal`
-				);
 				for (let w = relYPos; w < waterTreshold; w++) {
-					const pos = `^${x - width / 2} ^${w} ^${y - length / 2}`;
-					commands.push(
-						`particle minecraft:dust ${rgb} ${particleSize} ${pos} 0 0 0 20 1 normal`
-					);
+					const pos = `${prefix}${x - width / 2} ${prefix}${w} ${prefix}${
+						y - length / 2
+					}`;
+					commands.push(`setblock ${pos} water`);
 				}
 			} else {
-				const pos = `^${x - width / 2} ^${relYPos} ^${y - length / 2}`;
-				commands.push(
-					`particle minecraft:dust ${rgb} ${particleSize} ${pos} 0 0 0 20 1 normal`
-				);
+				const pos = `${prefix}${x - width / 2} ${prefix}${relYPos} ${prefix}${
+					y - length / 2
+				}`;
+				commands.push(`setblock ${pos} ${block}`);
 			}
 
+			commands.push(
+				`fill ${prefix}${x - width / 2} ${prefix}${relYPos - 1} ${prefix}${
+					y - length / 2
+				} ${prefix}${x - width / 2} ${prefix}${relYPos - 3} ${prefix}${
+					y - length / 2
+				} dirt`
+			);
+
 			// commands.push(
-			// 	`setblock ~${Math.floor(x - width / 2)} ~${Math.floor(
+			// 	`setblock ${prefix}${Math.floor(x - width / 2)} ${prefix}${Math.floor(
 			// 		value
-			// 	)} ~${Math.floor(y - length / 2)} grass_block`
+			// 	)} ${prefix}${Math.floor(y - length / 2)} grass_block`
 			// );
 		}
 	}
