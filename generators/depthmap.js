@@ -11,7 +11,6 @@ module.exports = async () => {
 	const m = 0.4;
 	const particleSize = 1.2;
 	const offset = 2;
-	const waterTreshold = -0.9 * m;
 	const prefix = "^";
 
 	const img = await loadImage("./images/europe.png");
@@ -68,21 +67,10 @@ module.exports = async () => {
 
 			if (data[3] === 0) continue;
 
-			if (relYPos < waterTreshold) {
-				for (let w = relYPos; w < waterTreshold; w += steppingSize) {
-					const pos = `${prefix}${rX} ${prefix}${w + offset} ${prefix}${rY}`;
-					commands.push(
-						`particle minecraft:dust ${rgb} ${particleSize} ${pos} 0 0 0 20 1`
-					);
-				}
-			} else {
-				const pos = `${prefix}${rX} ${prefix}${
-					relYPos + offset
-				} ${prefix}${rY}`;
-				commands.push(
-					`particle minecraft:dust ${rgb} ${particleSize} ${pos} 0 0 0 20 1 force`
-				);
-			}
+			const pos = `${prefix}${rX} ${prefix}${relYPos + offset} ${prefix}${rY}`;
+			commands.push(
+				`particle minecraft:dust ${rgb} ${particleSize} ${pos} 0 0 0 20 1 force`
+			);
 		}
 	}
 
