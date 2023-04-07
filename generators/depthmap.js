@@ -1,7 +1,7 @@
-const { Noise } = require("noisejs");
+const fs = require("fs");
+const { createCanvas, loadImage } = require("canvas");
 
-module.exports = () => {
-	const noise = new Noise(Math.random());
+module.exports = async () => {
 	const commands = [];
 
 	const circular = false;
@@ -10,23 +10,43 @@ module.exports = () => {
 	const length = 12.9;
 	const m = 0.4;
 	const particleSize = 1.2;
-	const noiseDivider = 5;
 	const offset = 2;
-	const waterTreshold = -0.6 * m;
+	const waterTreshold = -0.9 * m;
 	const prefix = "^";
+
+	const img = await loadImage("./images/europe.png");
+	const canvas = createCanvas(
+		(width / length) * img.naturalWidth,
+		img.naturalWidth
+	);
+	const ctx = canvas.getContext("2d");
+	ctx.translate(canvas.width, canvas.height);
+	ctx.rotate(Math.PI / 2);
+
+	ctx.drawImage(img, -canvas.height, -230);
+
+	const buffer = canvas.toBuffer("image/png");
+	fs.writeFileSync("./image.png", buffer);
 
 	for (let x = 0; x < width; x += steppingSize) {
 		for (let y = 0; y < length; y += steppingSize) {
-			let value = noise.simplex2(x / noiseDivider, y / noiseDivider);
+			let imgData = ctx.getImageData(
+				(x / width) * canvas.width,
+				(y / length) * canvas.height,
+				1,
+				1
+			).data;
+			let value =
+				1 - imgData.slice(0, 3).reduce((a, b) => a + b, 0) / (765 / 2);
+
+			if (imgData[3] <= 0) value = -1;
 
 			let relYPos = Math.floor(value * m * 100) / 100; // From -5 to +5 when `m` is 5
 
 			let data = [0, ((value + 1) / 2) * 200 + 55, 0];
 
-			if (relYPos < waterTreshold) {
+			if (imgData[3] <= 0) {
 				data = [128, 128, 255];
-			} else if (relYPos < waterTreshold + 0.1) {
-				data = [235, 223, 188];
 			} else if (relYPos > 0.6 * m) {
 				data = [255, 255, 255];
 			} else if (relYPos > 0.5 * m) {
@@ -66,7 +86,7 @@ module.exports = () => {
 		}
 	}
 
-	return { commands, functionName: "map" };
+	return { commands, functionName: "europe" };
 };
 
 function isInEllipse(x, y, width, length) {
