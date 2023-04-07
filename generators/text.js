@@ -45,9 +45,6 @@ module.exports = async () => {
 				yOffset: (rows.length - row - 1) * -1.5,
 			})
 		);
-
-		const buffer = canvas.toBuffer("image/png");
-		fs.writeFileSync("./image.png", buffer);
 	}
 
 	return { commands, functionName: "text" };

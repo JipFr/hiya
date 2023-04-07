@@ -24,9 +24,6 @@ module.exports = async () => {
 
 	ctx.drawImage(img, -canvas.height, -230);
 
-	const buffer = canvas.toBuffer("image/png");
-	fs.writeFileSync("./image.png", buffer);
-
 	for (let x = 0; x < width; x += steppingSize) {
 		for (let y = 0; y < length; y += steppingSize) {
 			let imgData = ctx.getImageData(
