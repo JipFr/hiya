@@ -6,8 +6,8 @@ const generators = [
 	// require("./generators/picture"),
 	// require("./generators/screenshare"),
 	// require("./generators/text"),
-	// require("./generators/gif"),
-	require("./generators/3dmap"),
+	require("./generators/gif"),
+	// require("./generators/3dmap"),
 	// require("./generators/stupid-circle"),
 	// require("./generators/waterplatform"),
 ];

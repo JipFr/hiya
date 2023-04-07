@@ -2,35 +2,28 @@ const fs = require("fs");
 const { createCanvas, loadImage } = require("canvas");
 const imageToParticles = require("./util/imageToParticles");
 const gifFrames = require("gif-frames");
+const { execSync } = require("child_process");
 
 module.exports = async () => {
-	// const filename = "godzilla-2";
+	const filename = "godzilla-2";
 	// const filename = "palpatine";
 	// const filename = "minion";
-	const filename = "smile-2";
+	// const filename = "smile-2";
 	// const filename = "1984";
+
 	const scoreboardName = `gif-${filename}`;
-	const frames = await gifFrames({
-		url: `./images/${filename}.gif`,
-		frames: "all",
-	});
 
-	if (!fs.existsSync("./images/frames/")) fs.mkdirSync("./images/frames/");
-	const paths = await Promise.all(
-		frames.map((frame) => {
-			return new Promise((resolve) => {
-				const img = frame.getImage();
+	const basePath = "./images/frames/";
 
-				const path = `images/frames/${frame.frameIndex}.png`;
-				const stream = fs.createWriteStream(path);
-				img.pipe(stream);
-
-				stream.on("finish", () => {
-					resolve(path);
-				});
-			});
-		})
+	if (!fs.existsSync(basePath)) fs.mkdirSync(basePath);
+	execSync(
+		`ffmpeg -i ./images/${filename}.gif -vsync 0 ${basePath}frame%d.png`
 	);
+
+	const paths = fs
+		.readdirSync("./images/frames/")
+		.map((fileName) => `${basePath}${fileName}`)
+		.sort((a, b) => a.replace(/[^0-9]/g, "") - b.replace(/[^0-9]/g, ""));
 
 	for (const path of paths) {
 		const img = await loadImage(path);
@@ -39,9 +32,9 @@ module.exports = async () => {
 		ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
 		// To particles
-		const div = 10;
-		const dimensions = 5;
-		const particleSize = 1;
+		const div = 8;
+		const dimensions = 8;
+		const particleSize = 0.9;
 
 		const commands = imageToParticles({
 			dimensions,
