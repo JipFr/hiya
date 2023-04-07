@@ -19,7 +19,7 @@ module.exports = () => {
 				const altYPos = yPos - 2;
 
 				let dist = Math.sqrt(xPos * xPos + zPos * zPos + altYPos * altYPos);
-				if (Math.round(dist) !== Math.round(dimensions / 2)) continue;
+				if (Math.round(dist) !== Math.round((dimensions - 0.1) / 2)) continue;
 
 				const pos = `^${xPos} ^${yPos} ^${zPos}`;
 				const rgb = `${x / xW} ${y / yW} ${z / zW}`;

@@ -1,7 +1,8 @@
 const { Noise } = require("noisejs");
 
-module.exports = () => {
-	const noise = new Noise(Math.random());
+const noise = new Noise(Math.random());
+
+module.exports = (noiseOffset = 0) => {
 	const commands = [];
 
 	const circularMap = false;
@@ -35,17 +36,20 @@ module.exports = () => {
 
 	for (let x = 0; x < width; x += steppingSize) {
 		for (let y = 0; y < length; y += steppingSize) {
-			let value = noise.simplex2(x / noiseDivider, y / noiseDivider);
+			let value = noise.simplex2(
+				x / noiseDivider,
+				(y + noiseOffset) / noiseDivider
+			);
 
 			let relYPos = Math.floor(value * m * 100) / 100; // From -5 to +5 when `m` is 5
 
-			let data = [
-				(x / width) * 255,
-				((value + 1) / 2) * 255,
-				(y / length) * 255,
-			];
+			// let data = [
+			// 	(x / width) * 255,
+			// 	((value + 1) / 2) * 255,
+			// 	(y / length) * 255,
+			// ];
 
-			// let data = [0, ((value + 1) / 2) * 255, 0];
+			let data = [0, ((value + 1) / 2) * 255, 0];
 
 			if (relYPos < waterTreshold) {
 				data = [128, 128, 255];
