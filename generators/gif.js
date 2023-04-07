@@ -34,7 +34,7 @@ module.exports = async () => {
 		// To particles
 		const div = 8;
 		const dimensions = 8;
-		const particleSize = 0.9;
+		const particleSize = 1;
 
 		const commands = imageToParticles({
 			dimensions,
