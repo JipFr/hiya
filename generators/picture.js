@@ -1,7 +1,7 @@
 const { createCanvas, loadImage } = require("canvas");
 const imageToParticles = require("./util/imageToParticles");
 
-module.exports = async (src = "./images/jip-transparent.png") => {
+module.exports = async (src = "./images/unnamed.png") => {
 	const img = await loadImage(src);
 
 	const canvas = createCanvas(img.naturalWidth, img.naturalHeight);
@@ -20,8 +20,8 @@ module.exports = async (src = "./images/jip-transparent.png") => {
 	// Big
 
 	const div = 10;
-	const dimensions = 10;
-	const particleSize = 1;
+	const dimensions = 3;
+	const particleSize = 0.7;
 
 	const commands = imageToParticles({
 		dimensions,
