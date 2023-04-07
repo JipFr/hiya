@@ -3,10 +3,11 @@ const fs = require("fs");
 const generators = [
 	// require("./generators/colorcube"),
 	// require("./generators/colorcircle"),
-	require("./generators/picture"),
+	// require("./generators/picture"),
 	// require("./generators/screenshare"),
 	// require("./generators/text"),
-	require("./generators/gif"),
+	// require("./generators/gif"),
+	require("./generators/3dmap"),
 	// require("./generators/stupid-circle"),
 	// require("./generators/waterplatform"),
 ];
