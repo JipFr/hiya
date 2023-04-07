@@ -4,14 +4,32 @@ module.exports = () => {
 	const noise = new Noise(Math.random());
 	const commands = [];
 
-	const circular = false;
-	const steppingSize = 0.2;
-	const width = 6.9;
-	const length = 12.9;
-	const m = 0.4;
-	const particleSize = 1.2;
+	const circularMap = false;
+	let offset = 2;
+	let steppingSize;
+	let circular;
+	let width;
+	let length;
+	let m;
+	let particleSize;
+	if (circularMap) {
+		offset = 3;
+		steppingSize = 0.2;
+		particleSize = 1.4;
+		circular = true;
+		width = 8;
+		length = 8;
+		m = 1.5;
+	} else {
+		steppingSize = 0.2;
+		particleSize = 1.5;
+		circular = false;
+		width = 6.9;
+		length = 12.9;
+		m = 0.4;
+	}
+
 	const noiseDivider = 5;
-	const offset = 2;
 	const waterTreshold = -0.6 * m;
 	const prefix = "^";
 
@@ -21,7 +39,13 @@ module.exports = () => {
 
 			let relYPos = Math.floor(value * m * 100) / 100; // From -5 to +5 when `m` is 5
 
-			let data = [0, ((value + 1) / 2) * 200 + 55, 0];
+			// let data = [
+			// 	(x / width) * 255,
+			// 	((value + 1) / 2) * 255,
+			// 	(y / length) * 255,
+			// ];
+
+			let data = [0, ((value + 1) / 2) * 255, 0];
 
 			if (relYPos < waterTreshold) {
 				data = [128, 128, 255];
@@ -60,7 +84,7 @@ module.exports = () => {
 					relYPos + offset
 				} ${prefix}${rY}`;
 				commands.push(
-					`particle minecraft:dust ${rgb} ${particleSize} ${pos} 0 0 0 20 1 force`
+					`particle minecraft:dust ${rgb} ${particleSize} ${pos} 0 0 0 20 1`
 				);
 			}
 		}
@@ -70,6 +94,7 @@ module.exports = () => {
 };
 
 function isInEllipse(x, y, width, length) {
+	return Math.sqrt(x * x + y * y) < width / 2;
 	const ellipseDist = (x * x) / width + (y * y) / length;
 	return ellipseDist <= 1;
 }
