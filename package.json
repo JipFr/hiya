@@ -2,6 +2,7 @@
   "dependencies": {
     "canvas": "^2.11.2",
     "gif-frames": "^1.0.1",
+    "modern-rcon": "^1.0.3",
     "nodejs-screen-capture": "^0.3.0",
     "nodemon": "^2.0.22",
     "noisejs": "^2.1.0",
