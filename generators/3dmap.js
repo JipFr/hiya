@@ -65,42 +65,6 @@ module.exports = () => {
 		}
 	}
 
-	// Generate trees
-	for (let i = 0; i < 3; i++) {
-		let isAboveWater = false;
-		let x;
-		let y;
-		let relYPos;
-		while (!isAboveWater) {
-			x = Math.floor(Math.random() * width * 100) / 100;
-			y = Math.floor(Math.random() * length * 100) / 100;
-			let value = noise.simplex2(x / noiseDivider, y / noiseDivider);
-			relYPos = Math.floor(value * m * 100) / 100;
-			isAboveWater = relYPos > waterTreshold;
-		}
-
-		const data = [150, 75, 0];
-		const r = data[0] / 255;
-		const g = data[1] / 255;
-		const b = data[2] / 255;
-		const rgb = `${r} ${g} ${b}`;
-
-		let xP = Math.floor(x * 100) / 100;
-		let yP = Math.floor(y * 100) / 100;
-
-		const rX = xP - width / 2;
-		const rY = yP - length / 2;
-
-		for (let t = 0; t < 4; t++) {
-			const pos = `${prefix}${rX} ${prefix}${
-				relYPos + offset + t / 10
-			} ${prefix}${rY}`;
-			commands.push(
-				`particle minecraft:dust ${rgb} 0.3 ${pos} 0 0 0 20 1 force`
-			);
-		}
-	}
-
 	return { commands, functionName: "map" };
 };
 
