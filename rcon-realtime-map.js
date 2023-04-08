@@ -1,29 +1,35 @@
 const Rcon = require("modern-rcon");
 
 const rconClients = [];
-let scanRconClient;
+let scanRconClients = [];
 
 let i = 0;
+let rconClientIndex = 0;
+let isScanning = false;
 
 let world = [];
 
 (async () => {
-	for (let i = 0; i < 15; i++) {
+	for (let i = 0; i < 60; i++) {
 		const rcon = new Rcon("localhost", "hello");
+		const rcon2 = new Rcon("localhost", "hello");
 		rconClients.push(rcon);
+		scanRconClients.push(rcon2);
 		await rcon.connect();
+		await rcon2.connect();
 	}
 
-	const rcon2 = new Rcon("localhost", "hello");
-	scanRconClient = rcon2;
-	await rcon2.connect();
-
 	await populateWorld();
+
+	setInterval(populateWorld, 5e3);
 
 	dewIt();
 })();
 
 async function populateWorld() {
+	if (isScanning) return false;
+	isScanning = true;
+
 	// From -320 63 -252 to -280 106 -204
 
 	// let startX = -320;
@@ -37,21 +43,44 @@ async function populateWorld() {
 
 	//From -540 62 -556 to -595 77 -522
 
-	let startX = -595;
-	let endX = -540;
+	// let startX = -595;
+	// let endX = -540;
 
-	let startY = 62;
-	let endY = 77;
+	// let startY = 62;
+	// let endY = 77;
 
-	let startZ = -556;
-	let endZ = -522;
+	// let startZ = -556;
+	// let endZ = -501;
 
-	for (let x = startX; x < endX; x++) {
-		for (let y = startY; y < endY; y++) {
-			for (let z = startZ; z < endZ; z++) {
+	let playerData = (
+		await scanRconClients[0].send(
+			`/data get entity @e[type=minecraft:armor_stand,limit=1]`
+		)
+	)
+		.split("entity data: ")
+		.pop();
+	const pos = playerData.split("Pos: [").pop().split("],")[0];
+	const [x, y, z] = pos.split(", ").map((t) => Number(t.split(".")[0]));
+	console.log(x, y, z);
+
+	let r = 30;
+
+	const startX = Math.floor(x - r);
+	const endX = Math.floor(x + r);
+	const startY = Math.floor(y - r / 2);
+	const endY = Math.floor(y + r * 2);
+	const startZ = Math.floor(z - r);
+	const endZ = Math.floor(z + r);
+
+	let newWorld = [];
+
+	// Get blocks for every position
+	for (let y = startY; y < endY; y++) {
+		for (let z = startZ; z < endZ; z++) {
+			for (let x = startX; x < endX; x++) {
 				const block = await testBlock(x, y, z);
 				if (block === "empty") continue;
-				world.push({
+				newWorld.push({
 					x,
 					y,
 					z,
@@ -60,25 +89,67 @@ async function populateWorld() {
 			}
 		}
 	}
+
+	// Filter so there's only one for each XY
+	const onlyTop = true;
+	if (onlyTop) {
+		let xzMap = {};
+		for (const block of newWorld) {
+			const key = `${block.x}-${block.z}`;
+			if (!xzMap[key]) xzMap[key] = [];
+			xzMap[key].push(block);
+			xzMap[key] = xzMap[key].sort((a, b) => b.y - a.y);
+		}
+
+		const whitelistedBlocks = [
+			"oak_leaves",
+			"oak_log",
+			"grass_block",
+			"birch_leaves",
+			"birch_log",
+		];
+
+		newWorld = newWorld.filter((block) => {
+			const key = `${block.x}-${block.z}`;
+			console.log(xzMap[key][0].y === block.y);
+			return (
+				xzMap[key][0].y === block.y || whitelistedBlocks.includes(block.block)
+			);
+		});
+	}
+
+	world = newWorld;
+
+	isScanning = false;
 }
 
 async function testBlock(x, y, z) {
+	const scanRconClient =
+		scanRconClients[rconClientIndex % scanRconClients.length];
+	rconClientIndex++;
 	let t = await scanRconClient.send(
 		`loot spawn ${x} ${y} ${z} mine ${x} ${y} ${z}`
 	);
+	let block = t.split(" ").pop().split(/:|\//).pop();
 	if (!t.includes("Dropped 0")) {
 		await scanRconClient.send(
 			`kill @e[type=item,x=${x},y=${y},z=${z},distance=..2]`
 		);
+	} else {
+		const waterTest = await scanRconClient.send(
+			`/execute if block ${x} ${y} ${z} water`
+		);
+		const isWater = !waterTest.includes("Test failed");
+		if (isWater) block = "water";
 	}
-	return t.split(" ").pop().split(/:|\//).pop();
+	return block;
 }
 
 function worldToParticles() {
 	let commands = [];
 
 	const prefix = "~";
-	const particleSize = 1;
+	const particleSize = 1.5;
 
 	let smallestX = Infinity;
 	let largestX = -Infinity;
@@ -101,7 +172,7 @@ function worldToParticles() {
 	for (const block of world) {
 		const blockColors = {
 			grass_block: [0, 200, 0],
-			grass: [100, 200, 100],
+			grass: [150, 255, 150],
 			oak_log: [255, 150, 0],
 			dirt: [150, 75, 0],
 			redstone_block: [255, 0, 0],
@@ -121,6 +192,10 @@ function worldToParticles() {
 			// snow: [255, 255, 255],
 			spruce_log: [150, 75, 0],
 			spruce_leaves: [0, 255, 0],
+			birch_log: [170, 85, 30],
+			birch_leaves: [100, 200, 100],
+			oak_leaves: [50, 255, 50],
+			deepslate: [100, 100, 100],
 		};
 		let data = blockColors[block.block];
 
@@ -143,7 +218,7 @@ function worldToParticles() {
 
 		const pos = `${prefix}${rX} ${prefix}${rY} ${prefix}${rZ}`;
 		commands.push(
-			`particle minecraft:dust ${rgb} ${particleSize} ${pos} 0 0 0 20 1`
+			`particle minecraft:dust ${rgb} ${particleSize} ${pos} 0 0 0 0 1`
 		);
 	}
 
@@ -191,5 +266,5 @@ async function dewIt() {
 
 	const diff = Date.now() - now;
 
-	setTimeout(dewIt, Math.max(0, 50 - diff));
+	setTimeout(dewIt, Math.max(0, 100 - diff));
 }
