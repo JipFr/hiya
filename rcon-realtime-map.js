@@ -9,6 +9,34 @@ let isScanning = false;
 
 let world = [];
 
+const blockColors = {
+	grass_block: [0, 200, 0],
+	grass: [150, 255, 150],
+	oak_log: [255, 150, 0],
+	dirt: [150, 75, 0],
+	redstone_block: [255, 0, 0],
+	cobblestone: [128, 128, 128],
+	sand: [196, 164, 61],
+	sandstone: [150, 140, 40],
+	clay: [194, 178, 128],
+	water: [0, 0, 200],
+	ice: [100, 100, 255],
+	blue_ice: [50, 50, 255],
+	packed_ice: [50, 50, 255],
+	coal_ore: [0, 0, 0],
+	gravel: [128, 128, 128],
+	stone: [200, 200, 200],
+	granite: [200, 200, 200],
+	snow_block: [255, 255, 255],
+	// snow: [255, 255, 255],
+	spruce_log: [150, 75, 0],
+	spruce_leaves: [0, 255, 0],
+	birch_log: [170, 85, 30],
+	birch_leaves: [100, 200, 100],
+	oak_leaves: [50, 255, 50],
+	deepslate: [100, 100, 100],
+};
+
 (async () => {
 	for (let i = 0; i < 60; i++) {
 		const rcon = new Rcon("localhost", "hello");
@@ -21,7 +49,7 @@ let world = [];
 
 	await populateWorld();
 
-	setInterval(populateWorld, 5e3);
+	// setInterval(populateWorld, 5e3);
 
 	dewIt();
 })();
@@ -61,7 +89,6 @@ async function populateWorld() {
 		.pop();
 	const pos = playerData.split("Pos: [").pop().split("],")[0];
 	const [x, y, z] = pos.split(", ").map((t) => Number(t.split(".")[0]));
-	console.log(x, y, z);
 
 	let r = 30;
 
@@ -74,12 +101,34 @@ async function populateWorld() {
 
 	let newWorld = [];
 
+	let coords = [];
+
 	// Get blocks for every position
-	for (let y = startY; y < endY; y++) {
-		for (let z = startZ; z < endZ; z++) {
-			for (let x = startX; x < endX; x++) {
-				const block = await testBlock(x, y, z);
-				if (block === "empty") continue;
+	for (let x = startX; x < endX; x++) {
+		for (let y = startY; y < endY; y++) {
+			for (let z = startZ; z < endZ; z++) {
+				coords.push({ x, y, z });
+			}
+		}
+	}
+
+	coords = coords
+		.sort((a, b) => a.x - b.x)
+		.sort((a, b) => a.y - b.y)
+		.sort((a, b) => a.z - b.z);
+
+	let coordsPerClient = coords.length / scanRconClients.length + 1;
+	let sequences = [];
+
+	while (coords.length > 0) {
+		sequences.push(coords.splice(0, coordsPerClient));
+	}
+
+	await Promise.all(
+		sequences.map(async (sequence, i) => {
+			for (const { x, y, z } of sequence) {
+				const block = await testBlock(x, y, z, i);
+				if (block === "empty" || !blockColors[block]) continue;
 				newWorld.push({
 					x,
 					y,
@@ -87,11 +136,11 @@ async function populateWorld() {
 					block,
 				});
 			}
-		}
-	}
+		})
+	);
 
 	// Filter so there's only one for each XY
-	const onlyTop = true;
+	const onlyTop = false;
 	if (onlyTop) {
 		let xzMap = {};
 		for (const block of newWorld) {
@@ -118,15 +167,16 @@ async function populateWorld() {
 		});
 	}
 
+	newWorld = newWorld.filter((t) => blockColors[t.block]);
+
 	world = newWorld;
+	console.log(world);
 
 	isScanning = false;
 }
 
-async function testBlock(x, y, z) {
-	const scanRconClient =
-		scanRconClients[rconClientIndex % scanRconClients.length];
-	rconClientIndex++;
+async function testBlock(x, y, z, i) {
+	const scanRconClient = scanRconClients[i % scanRconClients.length];
 	let t = await scanRconClient.send(
 		`loot spawn ${x} ${y} ${z} mine ${x} ${y} ${z}`
 	);
@@ -136,12 +186,17 @@ async function testBlock(x, y, z) {
 			`kill @e[type=item,x=${x},y=${y},z=${z},distance=..2]`
 		);
 	} else {
-		const waterTest = await scanRconClient.send(
-			`/execute if block ${x} ${y} ${z} water`
-		);
-		const isWater = !waterTest.includes("Test failed");
-		if (isWater) block = "water";
+		// const waterTest = await scanRconClient.send(
+		// 	`/execute if block ${x} ${y} ${z} water`
+		// );
+		// const isWater = !waterTest.includes("Test failed");
+		// if (isWater) block = "water";
 	}
+
+	if (blockColors[block]) {
+		console.log(t, x, y, z);
+	}
+
 	return block;
 }
 
@@ -170,33 +225,6 @@ function worldToParticles() {
 	let unknownBlocks = [];
 
 	for (const block of world) {
-		const blockColors = {
-			grass_block: [0, 200, 0],
-			grass: [150, 255, 150],
-			oak_log: [255, 150, 0],
-			dirt: [150, 75, 0],
-			redstone_block: [255, 0, 0],
-			cobblestone: [128, 128, 128],
-			sand: [196, 164, 61],
-			sandstone: [150, 140, 40],
-			clay: [194, 178, 128],
-			water: [0, 0, 200],
-			ice: [100, 100, 255],
-			blue_ice: [50, 50, 255],
-			packed_ice: [50, 50, 255],
-			coal_ore: [0, 0, 0],
-			gravel: [128, 128, 128],
-			stone: [200, 200, 200],
-			granite: [200, 200, 200],
-			snow_block: [255, 255, 255],
-			// snow: [255, 255, 255],
-			spruce_log: [150, 75, 0],
-			spruce_leaves: [0, 255, 0],
-			birch_log: [170, 85, 30],
-			birch_leaves: [100, 200, 100],
-			oak_leaves: [50, 255, 50],
-			deepslate: [100, 100, 100],
-		};
 		let data = blockColors[block.block];
 
 		if (!data) {
