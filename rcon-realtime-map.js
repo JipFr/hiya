@@ -1,8 +1,9 @@
+const fs = require("fs");
+const Rcon = require("modern-rcon");
+
 process.on("uncaughtException", (err) => {
 	console.log(err);
 });
-
-const Rcon = require("modern-rcon");
 
 const rconClients = [];
 let scanRconClients = [];
@@ -10,7 +11,7 @@ let scanRconClients = [];
 let i = 0;
 let rconClientIndex = 0;
 let isScanning = false;
-let knownBlocks = [];
+let knownBlocks = JSON.parse(fs.readFileSync("./map.json", "utf-8") || "[]");
 let world = [];
 
 const blockColors = {
@@ -58,7 +59,7 @@ const whitelistedBlocks = [
 ];
 
 (async () => {
-	for (let i = 0; i < 60; i++) {
+	for (let i = 0; i < 30; i++) {
 		const rcon = new Rcon("localhost", "hello");
 		const rcon2 = new Rcon("localhost", "hello");
 		rconClients.push(rcon);
@@ -130,23 +131,33 @@ async function populateWorld(override = false) {
 
 	console.log(x, y, z);
 
+	knownBlocks = knownBlocks.filter((t) => t.x);
+
 	let playerPos = await getPlayerPos();
 	let int = setInterval(async () => {
 		if (isScanning) return;
 		playerPos = await getPlayerPos();
 		if (!playerPos.z) return;
-		const rX = Math.floor(playerPos.x);
-		const rY = Math.floor(playerPos.y) - 2;
-		const rZ = Math.floor(playerPos.z);
-		const existingBlockAtLocation = knownBlocks.find(
-			(t) => t.x === rX && t.y === rY && t.z === rZ
-		);
-		if (existingBlockAtLocation) return;
-		knownBlocks.push({
-			x: rX,
-			y: rY,
-			z: rZ,
-		});
+		let s = 16;
+		let shouldScan = false;
+		for (let x1 = 0; x1 < s; x1++) {
+			for (let y1 = 0; y1 < s; y1++) {
+				const rX = Math.floor(playerPos.x + x1 - s / 2);
+				const rY = Math.floor(playerPos.y) - 2;
+				const rZ = Math.floor(playerPos.z + y1 - s / 2);
+				const existingBlockAtLocation = knownBlocks.find(
+					(t) => t.x === rX && t.y === rY && t.z === rZ
+				);
+				if (existingBlockAtLocation) continue;
+				shouldScan = true;
+				knownBlocks.push({
+					x: rX,
+					y: rY,
+					z: rZ,
+				});
+			}
+		}
+		if (!shouldScan) return;
 		isScanning = true;
 		console.log("t", knownBlocks.length);
 		setTimeout(() => {
@@ -159,7 +170,7 @@ async function populateWorld(override = false) {
 	let newWorld = [];
 
 	console.log("YEE");
-	const radius = 10;
+	const radius = 20;
 	const useNeighbourMethod = true;
 
 	if (useNeighbourMethod) {
@@ -195,14 +206,15 @@ async function populateWorld(override = false) {
 				}
 			}
 			for (const block of knownBlocks) {
-				let blockAbove = knownBlocks.find(
-					(t) => t.x === block.x && t.y === block.y + 3 && t.z === block.z
-				);
-				block.invalid =
-					!!blockAbove &&
-					blockAbove.block &&
-					!whitelistedBlocks.includes(blockAbove.block) &&
-					false;
+				block.invalid = false;
+				// 	let blockAbove = knownBlocks.find(
+				// 		(t) => t.x === block.x && t.y === block.y + 3 && t.z === block.z
+				// 	);
+				// 	block.invalid =
+				// 		!!blockAbove &&
+				// 		blockAbove.block &&
+				// 		!whitelistedBlocks.includes(blockAbove.block) &&
+				// 		false;
 			}
 
 			knownBlocks = knownBlocks.filter((b) => {
@@ -212,11 +224,7 @@ async function populateWorld(override = false) {
 				let pX = Math.abs(playerPos.x - b.x);
 				let pY = Math.abs(playerPos.y - 1 - b.y);
 				let pZ = Math.abs(playerPos.z - b.z);
-				return (
-					Math.sqrt(pX * pX + pY * pY + pZ * pZ) < radius ||
-					Math.sqrt(pX * pX + pY * pY + pZ * pZ) < radius ||
-					b.block
-				);
+				return Math.sqrt(pX * pX + pY * pY + pZ * pZ) < radius || b.block;
 			});
 
 			newWorld = knownBlocks.filter((t) => t.block !== "empty" && !t.invalid);
@@ -251,7 +259,7 @@ async function populateWorld(override = false) {
 	}
 
 	// Filter so there's only one for each XY
-	const onlyTop = false;
+	const onlyTop = true;
 	if (onlyTop) {
 		let xzMap = {};
 		for (const block of newWorld) {
@@ -270,6 +278,8 @@ async function populateWorld(override = false) {
 	}
 
 	world = newWorld;
+
+	fs.writeFileSync("./map.json", JSON.stringify(knownBlocks));
 
 	isScanning = false;
 }
