@@ -20,10 +20,6 @@ let world = [];
 
 	await populateWorld();
 
-	setInterval(() => {
-		// populateWorld();
-	}, 5e3);
-
 	dewIt();
 })();
 
