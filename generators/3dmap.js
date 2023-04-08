@@ -5,7 +5,7 @@ const noise = new Noise(Math.random());
 module.exports = (noiseOffset = 0) => {
 	const commands = [];
 
-	const circularMap = false;
+	const circularMap = true;
 	let offset = 2;
 	let steppingSize;
 	let circular;
@@ -25,8 +25,8 @@ module.exports = (noiseOffset = 0) => {
 		steppingSize = 0.2;
 		particleSize = 1.5;
 		circular = false;
-		width = 6.9;
-		length = 12.9;
+		width = 12.9;
+		length = 6.9;
 		m = 0.4;
 	}
 

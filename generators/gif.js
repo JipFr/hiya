@@ -7,7 +7,8 @@ const { execSync } = require("child_process");
 module.exports = async () => {
 	// const filename = "godzilla-2";
 	// const filename = "palpatine";
-	const filename = "minion";
+	const filename = "bad-apple";
+	// const filename = "minion";
 	// const filename = "smile-2";
 	// const filename = "1984";
 
