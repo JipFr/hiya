@@ -43,13 +43,13 @@ module.exports = (noiseOffset = 0) => {
 
 			let relYPos = Math.floor(value * m * 100) / 100; // From -5 to +5 when `m` is 5
 
-			// let data = [
-			// 	(x / width) * 255,
-			// 	((value + 1) / 2) * 255,
-			// 	(y / length) * 255,
-			// ];
+			let data = [
+				(x / width) * 255,
+				((value + 1) / 2) * 255,
+				(y / length) * 255,
+			];
 
-			let data = [0, ((value + 1) / 2) * 255, 0];
+			// let data = [0, ((value + 1) / 2) * 255, 0];
 
 			if (relYPos < waterTreshold) {
 				data = [128, 128, 255];

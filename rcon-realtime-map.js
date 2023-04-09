@@ -55,7 +55,7 @@ const whitelistedBlocks = [
 	"grass_block",
 	"birch_leaves",
 	"birch_log",
-	"water",
+	// "water",
 ];
 
 (async () => {
@@ -116,11 +116,15 @@ async function populateWorld(override = false) {
 	async function getPlayerPos() {
 		const rcon = new Rcon("localhost", "hello");
 		await rcon.connect();
-		let playerData = (await rcon.send(`/data get entity @p`))
-			.split("entity data: ")
-			.pop();
-		const pos2 = playerData.split("Pos: [").pop().split("],")[0];
-		const [x, y, z] = pos2.split(", ").map((t) => Number(t.split(".")[0]));
+		const res = await rcon.send(`/data get entity @p Pos`);
+		console.log(res);
+		let playerData = res.split("entity data: ").pop();
+		console.log(playerData);
+		const [x, y, z] = playerData
+			.slice(1, -1)
+			.split(", ")
+			.map((t) => Number(t.split(".")[0]));
+		console.log(x, y, z, playerData);
 		return {
 			x,
 			y,
