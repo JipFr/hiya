@@ -24,16 +24,17 @@ const blockColors = {
 	andesite: [100, 100, 100],
 	diorite: [200, 200, 200],
 	sea_lantern: [255, 255, 255],
-	deepslate: [150, 150, 150],
+	// deepslate: [150, 150, 150],
 	oak_leaves: [100, 255, 100],
 	jungle_leaves: [90, 255, 90],
 	bamboo: [90, 255, 90],
 	water: [100, 100, 255],
 	stone: [200, 200, 200],
-	sand: [245, 218, 98],
-	glowstone: [255, 255, 255],
-	sandstone: [200, 200, 60],
-	obsidian: [0, 0, 50],
+	// sand: [245, 218, 98],
+	// glowstone: [255, 255, 255],
+	// sandstone: [200, 200, 60],
+	// obsidian: [0, 0, 50],
+	powered_rail: [255, 200, 200],
 };
 
 module.exports = async () => {
