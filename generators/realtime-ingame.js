@@ -65,13 +65,18 @@ module.exports = async () => {
 	const run = {
 		functionName: "newmap/run",
 		commands: [
-			`execute as @s at @s unless entity @e[type=armor_stand,tag=particle] run summon minecraft:armor_stand ${armorStandPos} {Tags:["particle"],NoGravity:1b,Invisible:1b,Marker:1b}`,
+			// Init
 			"scoreboard objectives add map dummy",
 			`scoreboard players set limit map ${limit}`,
 			"scoreboard players set z map 0",
+			`execute as @s at @s unless entity @e[type=armor_stand,tag=particle] run summon minecraft:armor_stand ${armorStandPos} {Tags:["particle"],NoGravity:1b,Invisible:1b,Marker:1b}`,
+
+			// Initialise
 			`execute positioned ~-${limit / 2} ~-${limit / 2} ~-${
 				limit / 2
 			} run function jip:newmap/z`,
+
+			// Reset
 			`execute as @e[type=armor_stand,tag=particle,limit=1] at @s run tp ~ ~ ~-${
 				limit * stepper
 			}`,
@@ -82,12 +87,19 @@ module.exports = async () => {
 	const z = {
 		functionName: "newmap/z",
 		commands: [
+			// Teleport further ahead
 			`execute as @e[type=armor_stand,tag=particle,limit=1] at @s run tp ~ ~ ~${stepper}`,
+
+			// Reset value for next func
 			"scoreboard players set y map 0",
 			"function jip:newmap/y",
+
+			// Teleport Y back
 			`execute as @e[type=armor_stand,tag=particle,limit=1] at @s run tp ~ ~-${
 				limit * stepper
 			} ~`,
+
+			// Check if another level of recursion should happen
 			"scoreboard players add z map 1",
 			"execute if score z map < limit map positioned ~ ~ ~1 run function jip:newmap/z",
 		],
@@ -96,12 +108,19 @@ module.exports = async () => {
 	const y = {
 		functionName: "newmap/y",
 		commands: [
+			// Teleport further ahead
 			`execute as @e[type=armor_stand,tag=particle,limit=1] at @s run tp ~ ~${stepper} ~`,
+
+			// Reset value for next vunc
 			"scoreboard players set x map 0",
 			"function jip:newmap/x",
+
+			// TP back on X-axis
 			`execute as @e[type=armor_stand,tag=particle,limit=1] at @s run tp ~-${
 				limit * stepper
 			} ~ ~`,
+
+			// Check if another level of recursion should happen
 			"scoreboard players add y map 1",
 			"execute if score y map < limit map positioned ~ ~1 ~ run function jip:newmap/y",
 		],
@@ -110,8 +129,13 @@ module.exports = async () => {
 	const x = {
 		functionName: "newmap/x",
 		commands: [
+			// Teleport further ahead
 			`execute as @e[type=armor_stand,tag=particle,limit=1] at @s run tp ~${stepper} ~ ~`,
+
+			// RUN PARTICLE CHECK
 			"function jip:realtime-ingame-check",
+
+			// Check if another level of recursion should happen
 			"scoreboard players add x map 1",
 			"execute if score x map < limit map positioned ~1 ~ ~ run function jip:newmap/x",
 		],
