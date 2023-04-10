@@ -12,17 +12,31 @@ const generators = [
 	// require("./generators/worldgen"),
 	// require("./generators/stupid-circle"),
 	// require("./generators/waterplatform"),
+	require("./generators/realtime-ingame"),
 ];
 
 (async () => {
 	for (const gen of generators) {
-		const { commands, functionName } = await gen();
+		const data = await gen();
 
-		if (!functionName) continue;
+		let arr = data;
+		if (!Array.isArray(data)) arr = [data];
 
-		fs.writeFileSync(
-			`./data/jip/functions/${functionName}.mcfunction`,
-			commands.join("\n")
-		);
+		for (const { commands, functionName } of arr) {
+			if (!functionName) continue;
+
+			let dir = functionName.split("/").slice(0, -1).filter(Boolean);
+			for (let i = 0; i < dir.length; i++) {
+				let path = dir.slice(0, i + 1).join("/");
+				console.log(path);
+				const fullPath = `./data/jip/functions/${path}`;
+				if (!fs.existsSync(fullPath)) fs.mkdirSync(fullPath);
+			}
+
+			fs.writeFileSync(
+				`./data/jip/functions/${functionName}.mcfunction`,
+				commands.join("\n")
+			);
+		}
 	}
 })();
