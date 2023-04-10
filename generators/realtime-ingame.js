@@ -40,7 +40,7 @@ module.exports = async () => {
 	let scanCommands = [];
 
 	const particleSize = 1.5;
-	const limit = 30;
+	const limit = 20;
 	const stepper = 0.2;
 
 	for (const [block, rgbValues] of Object.entries(blockColors)) {

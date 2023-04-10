@@ -99,6 +99,4 @@ module.exports = (noiseOffset = 0) => {
 
 function isInEllipse(x, y, width, length) {
 	return Math.sqrt(x * x + y * y) < width / 2;
-	const ellipseDist = (x * x) / width + (y * y) / length;
-	return ellipseDist <= 1;
 }
