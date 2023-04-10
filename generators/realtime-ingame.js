@@ -6,12 +6,17 @@ const blockColors = {
 	// netherite_block: [100, 100, 100],
 	// glowstone: [150, 140, 40],
 	// stripped_dark_oak_log: [150, 75, 0],
-	dirt: [200, 100, 0],
-	grass_block: [0, 255, 0],
 	// dark_oak_slab: [120, 50, 0],
 	// dark_oak_planks: [120, 50, 0],
 	// spruce_planks: [170, 100, 0],
 	// dark_oak_stairs: [120, 50, 0],
+	// dark_oak_trapdoor: [100, 40, 0],
+	// azalea_leaves: [100, 255, 100],
+	// cobblestone: [100, 100, 100],
+	// mossy_cobblestone: [100, 130, 100],
+	// flowering_azalea_leaves: [255, 100, 200],
+	dirt: [200, 100, 0],
+	grass_block: [0, 255, 0],
 	oak_log: [120, 50, 0],
 	jungle_log: [120, 50, 0],
 	coal_ore: [128, 128, 128],
@@ -19,17 +24,12 @@ const blockColors = {
 	andesite: [100, 100, 100],
 	diorite: [200, 200, 200],
 	sea_lantern: [255, 255, 255],
-	// dark_oak_trapdoor: [100, 40, 0],
-	// azalea_leaves: [100, 255, 100],
+	deepslate: [150, 150, 150],
 	oak_leaves: [100, 255, 100],
 	jungle_leaves: [90, 255, 90],
 	bamboo: [90, 255, 90],
-	// flowering_azalea_leaves: [255, 100, 200],
 	water: [100, 100, 255],
 	stone: [200, 200, 200],
-	deepslate: [150, 150, 150],
-	// cobblestone: [100, 100, 100],
-	// mossy_cobblestone: [100, 130, 100],
 	sand: [245, 218, 98],
 	glowstone: [255, 255, 255],
 	sandstone: [200, 200, 60],
@@ -52,14 +52,10 @@ module.exports = async () => {
 
 		const pos = "~ ~10 ~";
 		const particle = `particle minecraft:dust ${rgb} ${particleSize} ${pos} 0 0 0 1 1 normal`;
-		const flameParticle = `particle minecraft:soul_fire_flame ${pos} 0 0 0 0 1 force`;
 
 		scanCommands.push(
 			`execute if block ~ ~ ~ ${block} at @e[type=armor_stand,tag=particle,limit=1] run ${particle}`
 		);
-		// scanCommands.push(
-		// 	`execute as @e[distance=..1] at @e[type=armor_stand,tag=particle,limit=1] run ${flameParticle}`
-		// );
 	}
 
 	const armorStandPos = `~-${(limit * stepper) / 2} ~-${
@@ -115,7 +111,6 @@ module.exports = async () => {
 		functionName: "newmap/x",
 		commands: [
 			`execute as @e[type=armor_stand,tag=particle,limit=1] at @s run tp ~${stepper} ~ ~`,
-			// "particle minecraft:flame ~ ~ ~ 0 0 0 0 1 force",
 			"function jip:realtime-ingame-check",
 			"scoreboard players add x map 1",
 			"execute if score x map < limit map positioned ~1 ~ ~ run function jip:newmap/x",

@@ -7,12 +7,12 @@ execute if block ~ ~ ~ granite at @e[type=armor_stand,tag=particle,limit=1] run 
 execute if block ~ ~ ~ andesite at @e[type=armor_stand,tag=particle,limit=1] run particle minecraft:dust 0.39215686274509803 0.39215686274509803 0.39215686274509803 1.5 ~ ~10 ~ 0 0 0 1 1 normal
 execute if block ~ ~ ~ diorite at @e[type=armor_stand,tag=particle,limit=1] run particle minecraft:dust 0.7843137254901961 0.7843137254901961 0.7843137254901961 1.5 ~ ~10 ~ 0 0 0 1 1 normal
 execute if block ~ ~ ~ sea_lantern at @e[type=armor_stand,tag=particle,limit=1] run particle minecraft:dust 1 1 1 1.5 ~ ~10 ~ 0 0 0 1 1 normal
+execute if block ~ ~ ~ deepslate at @e[type=armor_stand,tag=particle,limit=1] run particle minecraft:dust 0.5882352941176471 0.5882352941176471 0.5882352941176471 1.5 ~ ~10 ~ 0 0 0 1 1 normal
 execute if block ~ ~ ~ oak_leaves at @e[type=armor_stand,tag=particle,limit=1] run particle minecraft:dust 0.39215686274509803 1 0.39215686274509803 1.5 ~ ~10 ~ 0 0 0 1 1 normal
 execute if block ~ ~ ~ jungle_leaves at @e[type=armor_stand,tag=particle,limit=1] run particle minecraft:dust 0.35294117647058826 1 0.35294117647058826 1.5 ~ ~10 ~ 0 0 0 1 1 normal
 execute if block ~ ~ ~ bamboo at @e[type=armor_stand,tag=particle,limit=1] run particle minecraft:dust 0.35294117647058826 1 0.35294117647058826 1.5 ~ ~10 ~ 0 0 0 1 1 normal
 execute if block ~ ~ ~ water at @e[type=armor_stand,tag=particle,limit=1] run particle minecraft:dust 0.39215686274509803 0.39215686274509803 1 1.5 ~ ~10 ~ 0 0 0 1 1 normal
 execute if block ~ ~ ~ stone at @e[type=armor_stand,tag=particle,limit=1] run particle minecraft:dust 0.7843137254901961 0.7843137254901961 0.7843137254901961 1.5 ~ ~10 ~ 0 0 0 1 1 normal
-execute if block ~ ~ ~ deepslate at @e[type=armor_stand,tag=particle,limit=1] run particle minecraft:dust 0.5882352941176471 0.5882352941176471 0.5882352941176471 1.5 ~ ~10 ~ 0 0 0 1 1 normal
 execute if block ~ ~ ~ sand at @e[type=armor_stand,tag=particle,limit=1] run particle minecraft:dust 0.9607843137254902 0.8549019607843137 0.3843137254901961 1.5 ~ ~10 ~ 0 0 0 1 1 normal
 execute if block ~ ~ ~ glowstone at @e[type=armor_stand,tag=particle,limit=1] run particle minecraft:dust 1 1 1 1.5 ~ ~10 ~ 0 0 0 1 1 normal
 execute if block ~ ~ ~ sandstone at @e[type=armor_stand,tag=particle,limit=1] run particle minecraft:dust 0.7843137254901961 0.7843137254901961 0.23529411764705882 1.5 ~ ~10 ~ 0 0 0 1 1 normal
