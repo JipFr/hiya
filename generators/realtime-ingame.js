@@ -14,16 +14,23 @@ const blockColors = {
 	// dark_oak_stairs: [120, 50, 0],
 	oak_log: [120, 50, 0],
 	jungle_log: [120, 50, 0],
+	coal_ore: [128, 128, 128],
+	granite: [200, 100, 100],
+	andesite: [100, 100, 100],
+	diorite: [200, 200, 200],
 	// dark_oak_trapdoor: [100, 40, 0],
 	// azalea_leaves: [100, 255, 100],
 	oak_leaves: [100, 255, 100],
+	jungle_leaves: [90, 255, 90],
 	// flowering_azalea_leaves: [255, 100, 200],
 	water: [100, 100, 255],
 	stone: [200, 200, 200],
 	// stone_slab: [128, 128, 128],
-	vine: [128, 255, 128],
+	// vine: [128, 255, 128],
 	// black_concrete: [0, 0, 0],
 	// bookshelf: [255, 255, 25],
+	sand: [245, 218, 98],
+	sandstone: [200, 200, 60],
 };
 
 module.exports = async () => {
@@ -53,8 +60,8 @@ module.exports = async () => {
 		`execute as @e[type=armor_stand,tag=!particle] at @s unless entity @e[type=armor_stand,tag=particle,distance=..${size}] run summon minecraft:armor_stand ~ ~ ~ {Tags:["particle"],NoGravity:1b,Marker:1b, Invisible:1b}`
 	);
 
-	for (let x = 0; x < size; x++) {
-		for (let y = 0; y < size; y++) {
+	for (let y = 0; y < size; y++) {
+		for (let x = 0; x < size; x++) {
 			for (let z = 0; z < size; z++) {
 				const rX = x - size / 2;
 				const rY = y - size / 2;
@@ -64,7 +71,7 @@ module.exports = async () => {
 				commands.push(
 					`execute as @e[type=armor_stand,tag=!particle] at @s run teleport @e[tag=particle,limit=1] ~${
 						rX / d
-					} ~${rY / d + 15} ~${rZ / d}`
+					} ~${rY / d + 30} ~${rZ / d}`
 				);
 
 				commands.push(
