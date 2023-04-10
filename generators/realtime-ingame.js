@@ -13,31 +13,35 @@ const blockColors = {
 	// spruce_planks: [170, 100, 0],
 	// dark_oak_stairs: [120, 50, 0],
 	oak_log: [120, 50, 0],
-	// jungle_log: [120, 50, 0],
+	jungle_log: [120, 50, 0],
 	coal_ore: [128, 128, 128],
 	granite: [200, 100, 100],
 	andesite: [100, 100, 100],
 	diorite: [200, 200, 200],
+	sea_lantern: [255, 255, 255],
 	// dark_oak_trapdoor: [100, 40, 0],
 	// azalea_leaves: [100, 255, 100],
 	oak_leaves: [100, 255, 100],
-	// jungle_leaves: [90, 255, 90],
+	jungle_leaves: [90, 255, 90],
+	bamboo: [90, 255, 90],
 	// flowering_azalea_leaves: [255, 100, 200],
 	water: [100, 100, 255],
 	stone: [200, 200, 200],
+	deepslate: [150, 150, 150],
 	// cobblestone: [100, 100, 100],
 	// mossy_cobblestone: [100, 130, 100],
 	sand: [245, 218, 98],
+	glowstone: [255, 255, 255],
 	sandstone: [200, 200, 60],
+	obsidian: [0, 0, 50],
 };
 
 module.exports = async () => {
-	let commands = [];
 	let scanCommands = [];
 
-	const particleSize = 3;
-	const d = 3;
-	const size = 30;
+	const particleSize = 1.5;
+	const limit = 30;
+	const stepper = 0.2;
 
 	for (const [block, rgbValues] of Object.entries(blockColors)) {
 		const rgb = [
@@ -46,44 +50,83 @@ module.exports = async () => {
 			rgbValues[2] / 255,
 		].join(" ");
 
-		const pos = "~ ~ ~";
+		const pos = "~ ~10 ~";
 		const particle = `particle minecraft:dust ${rgb} ${particleSize} ${pos} 0 0 0 1 1 normal`;
+		const flameParticle = `particle minecraft:soul_fire_flame ${pos} 0 0 0 0 1 force`;
 
 		scanCommands.push(
-			`execute if block ~ ~ ~ ${block} at @e[tag=particle,limit=1] run ${particle}`
+			`execute if block ~ ~ ~ ${block} at @e[type=armor_stand,tag=particle,limit=1] run ${particle}`
 		);
+		// scanCommands.push(
+		// 	`execute as @e[distance=..1] at @e[type=armor_stand,tag=particle,limit=1] run ${flameParticle}`
+		// );
 	}
 
-	commands.push(
-		`execute as @e[type=armor_stand,tag=!particle] at @s unless entity @e[type=armor_stand,tag=particle,distance=..${size}] run summon minecraft:armor_stand ~ ~ ~ {Tags:["particle"],NoGravity:1b,Marker:1b, Invisible:1b}`
-	);
+	const armorStandPos = `~-${(limit * stepper) / 2} ~-${
+		(limit * stepper) / 2
+	} ~-${(limit * stepper) / 2}`;
 
-	for (let y = 0; y < size; y++) {
-		for (let x = 0; x < size; x++) {
-			for (let z = 0; z < size; z++) {
-				const rX = x - size / 2;
-				const rY = y - size / 2;
-				const rZ = z - size / 2;
+	const run = {
+		functionName: "newmap/run",
+		commands: [
+			`execute as @s at @s unless entity @e[type=armor_stand,tag=particle] run summon minecraft:armor_stand ${armorStandPos} {Tags:["particle"],NoGravity:1b,Invisible:1b,Marker:1b}`,
+			"scoreboard objectives add map dummy",
+			`scoreboard players set limit map ${limit}`,
+			"scoreboard players set z map 0",
+			`execute positioned ~-${limit / 2} ~-${limit / 2} ~-${
+				limit / 2
+			} run function jip:newmap/z`,
+			`execute as @e[type=armor_stand,tag=particle,limit=1] at @s run tp ~ ~ ~-${
+				limit * stepper
+			}`,
+			`execute at @s run teleport @e[type=armor_stand,tag=particle,limit=1] ${armorStandPos}`,
+		],
+	};
 
-				// Teleport Armor Stand to particle position
-				commands.push(
-					`execute as @e[type=armor_stand,tag=!particle] at @s run teleport @e[tag=particle,limit=1] ~${
-						rX / d
-					} ~${rY / d + 30} ~${rZ / d}`
-				);
+	const z = {
+		functionName: "newmap/z",
+		commands: [
+			`execute as @e[type=armor_stand,tag=particle,limit=1] at @s run tp ~ ~ ~${stepper}`,
+			"scoreboard players set y map 0",
+			"function jip:newmap/y",
+			`execute as @e[type=armor_stand,tag=particle,limit=1] at @s run tp ~ ~-${
+				limit * stepper
+			} ~`,
+			"scoreboard players add z map 1",
+			"execute if score z map < limit map positioned ~ ~ ~1 run function jip:newmap/z",
+		],
+	};
 
-				commands.push(
-					`execute as @e[type=armor_stand,tag=!particle] at @s positioned ~${rX} ~${rY} ~${rZ} run function jip:realtime-ingame-check`
-				);
-			}
-		}
-	}
+	const y = {
+		functionName: "newmap/y",
+		commands: [
+			`execute as @e[type=armor_stand,tag=particle,limit=1] at @s run tp ~ ~${stepper} ~`,
+			"scoreboard players set x map 0",
+			"function jip:newmap/x",
+			`execute as @e[type=armor_stand,tag=particle,limit=1] at @s run tp ~-${
+				limit * stepper
+			} ~ ~`,
+			"scoreboard players add y map 1",
+			"execute if score y map < limit map positioned ~ ~1 ~ run function jip:newmap/y",
+		],
+	};
+
+	const x = {
+		functionName: "newmap/x",
+		commands: [
+			`execute as @e[type=armor_stand,tag=particle,limit=1] at @s run tp ~${stepper} ~ ~`,
+			// "particle minecraft:flame ~ ~ ~ 0 0 0 0 1 force",
+			"function jip:realtime-ingame-check",
+			"scoreboard players add x map 1",
+			"execute if score x map < limit map positioned ~1 ~ ~ run function jip:newmap/x",
+		],
+	};
 
 	return [
-		{
-			commands,
-			functionName: "realtime-ingame-map",
-		},
+		run,
+		x,
+		y,
+		z,
 		{
 			commands: scanCommands,
 			functionName: "realtime-ingame-check",

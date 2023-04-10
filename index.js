@@ -28,7 +28,6 @@ const generators = [
 			let dir = functionName.split("/").slice(0, -1).filter(Boolean);
 			for (let i = 0; i < dir.length; i++) {
 				let path = dir.slice(0, i + 1).join("/");
-				console.log(path);
 				const fullPath = `./data/jip/functions/${path}`;
 				if (!fs.existsSync(fullPath)) fs.mkdirSync(fullPath);
 			}
