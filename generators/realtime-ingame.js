@@ -68,13 +68,13 @@ module.exports = async () => {
 			// Init
 			"scoreboard objectives add map dummy",
 			`scoreboard players set limit map ${limit}`,
-			"scoreboard players set z map 0",
+			"scoreboard players set y map 0",
 			`execute as @s at @s unless entity @e[type=armor_stand,tag=particle] run summon minecraft:armor_stand ${armorStandPos} {Tags:["particle"],NoGravity:1b,Invisible:1b,Marker:1b}`,
 
 			// Initialise
 			`execute positioned ~-${limit / 2} ~-${limit / 2} ~-${
 				limit / 2
-			} run function jip:newmap/z`,
+			} run function jip:newmap/y`,
 
 			// Reset
 			`execute as @e[type=armor_stand,tag=particle,limit=1] at @s run tp ~ ~ ~-${
@@ -91,13 +91,13 @@ module.exports = async () => {
 			`execute as @e[type=armor_stand,tag=particle,limit=1] at @s run tp ~ ~ ~${stepper}`,
 
 			// Reset value for next func
-			"scoreboard players set y map 0",
-			"function jip:newmap/y",
+			"scoreboard players set x map 0",
+			"function jip:newmap/x",
 
-			// Teleport Y back
-			`execute as @e[type=armor_stand,tag=particle,limit=1] at @s run tp ~ ~-${
+			// Teleport X back
+			`execute as @e[type=armor_stand,tag=particle,limit=1] at @s run tp ~-${
 				limit * stepper
-			} ~`,
+			} ~ ~`,
 
 			// Check if another level of recursion should happen
 			"scoreboard players add z map 1",
@@ -112,13 +112,13 @@ module.exports = async () => {
 			`execute as @e[type=armor_stand,tag=particle,limit=1] at @s run tp ~ ~${stepper} ~`,
 
 			// Reset value for next vunc
-			"scoreboard players set x map 0",
-			"function jip:newmap/x",
+			"scoreboard players set z map 0",
+			"function jip:newmap/z",
 
-			// TP back on X-axis
-			`execute as @e[type=armor_stand,tag=particle,limit=1] at @s run tp ~-${
+			// TP back on Z-axis
+			`execute as @e[type=armor_stand,tag=particle,limit=1] at @s run tp ~ ~ ~-${
 				limit * stepper
-			} ~ ~`,
+			}`,
 
 			// Check if another level of recursion should happen
 			"scoreboard players add y map 1",
