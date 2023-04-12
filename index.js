@@ -7,12 +7,14 @@ const generators = [
 	// require("./generators/screenshare"),
 	// require("./generators/text"),
 	// require("./generators/gif"),
-	require("./generators/3dmap"),
+	// require("./generators/3dmap"),
 	// require("./generators/depthmap"),
 	// require("./generators/worldgen"),
 	// require("./generators/stupid-circle"),
 	// require("./generators/waterplatform"),
-	require("./generators/realtime-ingame"),
+	// require("./generators/realtime-ingame"),
+	// require("./generators/block-color-map"),
+	require("./generators/image-to-block"),
 ];
 
 (async () => {

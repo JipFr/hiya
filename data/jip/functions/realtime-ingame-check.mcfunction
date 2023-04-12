@@ -1,3 +1,12 @@
+execute if block ~ ~ ~ netherite_block at @e[type=armor_stand,tag=particle,limit=1] run particle minecraft:dust 0.39215686274509803 0.39215686274509803 0.39215686274509803 1.5 ~ ~10 ~ 0 0 0 1 1 normal
+execute if block ~ ~ ~ glowstone at @e[type=armor_stand,tag=particle,limit=1] run particle minecraft:dust 0.5882352941176471 0.5490196078431373 0.1568627450980392 1.5 ~ ~10 ~ 0 0 0 1 1 normal
+execute if block ~ ~ ~ stripped_dark_oak_log at @e[type=armor_stand,tag=particle,limit=1] run particle minecraft:dust 0.5882352941176471 0.29411764705882354 0 1.5 ~ ~10 ~ 0 0 0 1 1 normal
+execute if block ~ ~ ~ dark_oak_slab at @e[type=armor_stand,tag=particle,limit=1] run particle minecraft:dust 0.47058823529411764 0.19607843137254902 0 1.5 ~ ~10 ~ 0 0 0 1 1 normal
+execute if block ~ ~ ~ dark_oak_planks at @e[type=armor_stand,tag=particle,limit=1] run particle minecraft:dust 0.47058823529411764 0.19607843137254902 0 1.5 ~ ~10 ~ 0 0 0 1 1 normal
+execute if block ~ ~ ~ spruce_planks at @e[type=armor_stand,tag=particle,limit=1] run particle minecraft:dust 0.6666666666666666 0.39215686274509803 0 1.5 ~ ~10 ~ 0 0 0 1 1 normal
+execute if block ~ ~ ~ dark_oak_stairs at @e[type=armor_stand,tag=particle,limit=1] run particle minecraft:dust 0.47058823529411764 0.19607843137254902 0 1.5 ~ ~10 ~ 0 0 0 1 1 normal
+execute if block ~ ~ ~ dark_oak_trapdoor at @e[type=armor_stand,tag=particle,limit=1] run particle minecraft:dust 0.39215686274509803 0.1568627450980392 0 1.5 ~ ~10 ~ 0 0 0 1 1 normal
+execute if block ~ ~ ~ azalea_leaves at @e[type=armor_stand,tag=particle,limit=1] run particle minecraft:dust 0.39215686274509803 1 0.39215686274509803 1.5 ~ ~10 ~ 0 0 0 1 1 normal
 execute if block ~ ~ ~ dirt at @e[type=armor_stand,tag=particle,limit=1] run particle minecraft:dust 0.7843137254901961 0.39215686274509803 0 1.5 ~ ~10 ~ 0 0 0 1 1 normal
 execute if block ~ ~ ~ grass_block at @e[type=armor_stand,tag=particle,limit=1] run particle minecraft:dust 0 1 0 1.5 ~ ~10 ~ 0 0 0 1 1 normal
 execute if block ~ ~ ~ oak_log at @e[type=armor_stand,tag=particle,limit=1] run particle minecraft:dust 0.47058823529411764 0.19607843137254902 0 1.5 ~ ~10 ~ 0 0 0 1 1 normal
