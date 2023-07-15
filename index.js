@@ -18,9 +18,10 @@ const generators = [
 	// require("./generators/image-to-block"),
 	// require("./generators/text-img"),
 	// require("./generators/gif-display"),
+	require("./generators/3dmap-displayblocks"),
 ];
 
-(async () => {
+async function main() {
 	for (const gen of generators) {
 		const data = await gen();
 
@@ -66,4 +67,6 @@ const generators = [
 			);
 		}
 	}
-})();
+}
+
+main();
