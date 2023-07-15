@@ -1,4 +1,5 @@
 const fs = require("fs");
+const { basePath, packPath } = require("./config.js");
 
 const generators = [
 	// require("./generators/colorcube"),
@@ -15,7 +16,8 @@ const generators = [
 	// require("./generators/realtime-ingame"),
 	// require("./generators/block-color-map"),
 	// require("./generators/image-to-block"),
-	require("./generators/text-img"),
+	// require("./generators/text-img"),
+	// require("./generators/gif-display"),
 ];
 
 (async () => {
@@ -24,13 +26,6 @@ const generators = [
 
 		let arr = data;
 		if (!Array.isArray(data)) arr = [data];
-
-		const worldName = "Functions text";
-		const worldPath = `/Users/jip/Library/Application Support/minecraft/saves/${worldName}/`;
-		const packPath = `${worldPath}datapacks/hiya/`;
-
-		// Make sure all folders exists
-		const basePath = `${packPath}data/jip/functions/`;
 
 		const worldDir = basePath.split("/");
 		for (let i = 1; i < worldDir.length; i++) {
