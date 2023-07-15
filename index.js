@@ -14,7 +14,8 @@ const generators = [
 	// require("./generators/waterplatform"),
 	// require("./generators/realtime-ingame"),
 	// require("./generators/block-color-map"),
-	require("./generators/image-to-block"),
+	// require("./generators/image-to-block"),
+	require("./generators/text-img"),
 ];
 
 (async () => {
@@ -24,18 +25,48 @@ const generators = [
 		let arr = data;
 		if (!Array.isArray(data)) arr = [data];
 
+		const worldName = "Functions text";
+		const worldPath = `/Users/jip/Library/Application Support/minecraft/saves/${worldName}/`;
+		const packPath = `${worldPath}datapacks/hiya/`;
+
+		// Make sure all folders exists
+		const basePath = `${packPath}data/jip/functions/`;
+
+		const worldDir = basePath.split("/");
+		for (let i = 1; i < worldDir.length; i++) {
+			let path = worldDir.slice(0, i + 1).join("/");
+			const fullPath = `${path}`;
+			if (!fs.existsSync(fullPath)) fs.mkdirSync(fullPath);
+		}
+
+		// Generate pack.mcmeta
+		fs.writeFileSync(
+			`${packPath}pack.mcmeta`,
+			JSON.stringify(
+				{
+					pack: {
+						pack_format: 1,
+						description: "Hiya",
+					},
+				},
+				null,
+				2
+			)
+		);
+
+		// Generat eall functions
 		for (const { commands, functionName } of arr) {
 			if (!functionName) continue;
 
 			let dir = functionName.split("/").slice(0, -1).filter(Boolean);
 			for (let i = 0; i < dir.length; i++) {
 				let path = dir.slice(0, i + 1).join("/");
-				const fullPath = `./data/jip/functions/${path}`;
+				const fullPath = `${basePath}${path}`;
 				if (!fs.existsSync(fullPath)) fs.mkdirSync(fullPath);
 			}
 
 			fs.writeFileSync(
-				`./data/jip/functions/${functionName}.mcfunction`,
+				`${basePath}${functionName}.mcfunction`,
 				commands.join("\n")
 			);
 		}
